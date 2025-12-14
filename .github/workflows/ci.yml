@@ -9,7 +9,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,3 +29,11 @@ jobs:
         uses: zricethezav/gitleaks-action@v2
         with:
           args: "--verbose"
+
+      - name: Build Docker image
+        run: docker build -t securegrade -f docker/Dockerfile .
+
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: securegrade:latest
